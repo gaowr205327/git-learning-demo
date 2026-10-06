@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Unit Converter —— 一个用来练习 Git 版本管理的小程序。
 
-第 1 轮（v0.1.1）：欢迎语加了边框，换算结果改用箭头显示。
+第 2 轮（v0.1.2）：换算结果的小数位由 2 位提高到 4 位。
 
 用法:
     python src/unit_converter.py                  # 进入交互模式
@@ -13,7 +13,7 @@
 import sys
 
 APP_NAME = "Unit Converter"
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 
 # 所有长度单位统一折算成「米」的系数
 LENGTH_UNITS = {
@@ -26,7 +26,7 @@ LENGTH_UNITS = {
 }
 
 # 结果保留的小数位数
-DECIMALS = 2
+DECIMALS = 4
 
 
 def convert(value, from_unit, to_unit):
