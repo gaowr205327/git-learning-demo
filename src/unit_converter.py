@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Unit Converter —— 一个用来练习 Git 版本管理的小程序。
 
-第 2 轮（v0.1.2）：换算结果的小数位由 2 位提高到 4 位。
+第 3 轮（v0.2.0）：新增重量单位换算，支持「长度」与「重量」两类单位。
 
 用法:
     python src/unit_converter.py                  # 进入交互模式
@@ -13,7 +13,7 @@
 import sys
 
 APP_NAME = "Unit Converter"
-VERSION = "0.1.2"
+VERSION = "0.2.0"
 
 # 所有长度单位统一折算成「米」的系数
 LENGTH_UNITS = {
@@ -25,32 +25,57 @@ LENGTH_UNITS = {
     "foot": 0.3048,
 }
 
+# 所有重量单位统一折算成「克」的系数
+WEIGHT_UNITS = {
+    "mg": 0.001,
+    "g": 1.0,
+    "kg": 1000.0,
+    "t": 1000000.0,
+    "oz": 28.349523125,
+    "lb": 453.59237,
+}
+
+# 按类别归组：展示时按类列出，换算也只在同一类里进行
+UNIT_TABLES = {
+    "长度": LENGTH_UNITS,
+    "重量": WEIGHT_UNITS,
+}
+
 # 结果保留的小数位数
 DECIMALS = 4
 
 
-def convert(value, from_unit, to_unit):
-    """把 value 从 from_unit 换算成 to_unit。"""
-    return value * LENGTH_UNITS[from_unit] / LENGTH_UNITS[to_unit]
+def resolve_table(from_unit, to_unit):
+    """两个单位必须属于同一类，返回该类的单位表；否则返回 None。"""
+    for table in UNIT_TABLES.values():
+        if from_unit in table and to_unit in table:
+            return table
+    return None
 
 
-def format_result(value, from_unit, to_unit):
+def convert(value, from_unit, to_unit, table):
+    """在同一类单位表 table 内，把 value 从 from_unit 换算成 to_unit。"""
+    return value * table[from_unit] / table[to_unit]
+
+
+def format_result(value, from_unit, to_unit, table):
     """把一次换算格式化成一行可读的文本。"""
-    result = convert(value, from_unit, to_unit)
+    result = convert(value, from_unit, to_unit, table)
     return "{} {}  ->  {} {}".format(
         "{:g}".format(value), from_unit, "{:.{d}f}".format(result, d=DECIMALS), to_unit
     )
 
 
 def show_unit_list():
-    print("支持的长度单位: " + ", ".join(LENGTH_UNITS))
+    for name, table in UNIT_TABLES.items():
+        print("支持的{}单位: {}".format(name, ", ".join(table)))
 
 
 def interactive():
     """交互模式：反复读取用户输入并换算。"""
     print("=" * 38)
     print("  {} v{}".format(APP_NAME, VERSION))
-    print("  长度单位换算小工具")
+    print("  长度 / 重量单位换算小工具")
     print("=" * 38)
     show_unit_list()
     print("输入格式: 数值 源单位 目标单位    (直接回车退出)")
@@ -75,11 +100,12 @@ def interactive():
             print("'{}' 不是有效数字".format(raw_value))
             continue
 
-        if from_unit not in LENGTH_UNITS or to_unit not in LENGTH_UNITS:
-            print("不认识这个单位，请看上面的列表")
+        table = resolve_table(from_unit, to_unit)
+        if table is None:
+            print("不认识这两个单位，或它们不属于同一类")
             continue
 
-        print(format_result(value, from_unit, to_unit))
+        print(format_result(value, from_unit, to_unit, table))
 
     print("再见")
 
@@ -98,10 +124,11 @@ def main(argv=None):
         except ValueError:
             print("错误: '{}' 不是有效数字".format(raw_value))
             return 1
-        if from_unit not in LENGTH_UNITS or to_unit not in LENGTH_UNITS:
-            print("错误: 不认识这个单位")
+        table = resolve_table(from_unit, to_unit)
+        if table is None:
+            print("错误: 单位无效，或两个单位不属于同一类")
             return 1
-        print(format_result(value, from_unit, to_unit))
+        print(format_result(value, from_unit, to_unit, table))
         return 0
 
     if argv:
