@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Unit Converter —— 一个用来练习 Git 版本管理的小程序。
 
-第 0 轮（基线版本 v0.1.0）：只支持长度单位换算。
+第 1 轮（v0.1.1）：欢迎语加了边框，换算结果改用箭头显示。
 
 用法:
     python src/unit_converter.py                  # 进入交互模式
@@ -13,7 +13,7 @@
 import sys
 
 APP_NAME = "Unit Converter"
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 
 # 所有长度单位统一折算成「米」的系数
 LENGTH_UNITS = {
@@ -37,7 +37,7 @@ def convert(value, from_unit, to_unit):
 def format_result(value, from_unit, to_unit):
     """把一次换算格式化成一行可读的文本。"""
     result = convert(value, from_unit, to_unit)
-    return "{} {} = {} {}".format(
+    return "{} {}  ->  {} {}".format(
         "{:g}".format(value), from_unit, "{:.{d}f}".format(result, d=DECIMALS), to_unit
     )
 
@@ -48,7 +48,10 @@ def show_unit_list():
 
 def interactive():
     """交互模式：反复读取用户输入并换算。"""
-    print("{} v{}".format(APP_NAME, VERSION))
+    print("=" * 38)
+    print("  {} v{}".format(APP_NAME, VERSION))
+    print("  长度单位换算小工具")
+    print("=" * 38)
     show_unit_list()
     print("输入格式: 数值 源单位 目标单位    (直接回车退出)")
     while True:
