@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Unit Converter —— 一个用来练习 Git 版本管理的小程序。
 
-第 4 轮（v0.2.1）：修正磅（lb）的换算系数 —— 1 lb = 453.59237 g。
+第 5 轮（v0.2.3）：用 git revert 撤回 v0.2.2 的输出格式改动，整数结果恢复补零。
 
 用法:
     python src/unit_converter.py                  # 进入交互模式
@@ -13,7 +13,7 @@
 import sys
 
 APP_NAME = "Unit Converter"
-VERSION = "0.2.1"
+VERSION = "0.2.3"
 
 # 所有长度单位统一折算成「米」的系数
 LENGTH_UNITS = {
