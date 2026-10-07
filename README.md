@@ -21,7 +21,7 @@ python src/unit_converter.py
 
 ```
 ======================================
-  Unit Converter v0.2.0
+  Unit Converter v0.2.1
   长度 / 重量单位换算小工具
 ======================================
 支持的长度单位: mm, cm, m, km, inch, foot
